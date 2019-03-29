@@ -1,0 +1,10 @@
+[package]
+name = "exifsd"
+version = "0.1.0"
+authors = ["Geordon Worley <vadixidav@gmail.com>"]
+edition = "2018"
+
+exclude = ["exif-samples/**/*"]
+
+[dependencies]
+combine = "3.8.1"
