@@ -17,3 +17,7 @@ You can also clone this repository recursively:
 ```bash
 git clone --recursive https://github.com/vadixidav/exifsd.git
 ```
+
+## Credits
+
+[This excellent overview of the Exif file format](https://www.media.mit.edu/pia/Research/deepview/exif.html) was incredibly useful in the development of this library. Big thanks to TsuruZoh Tachibanaya!
