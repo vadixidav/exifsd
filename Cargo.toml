@@ -8,3 +8,4 @@ exclude = ["exif-samples/**/*"]
 
 [dependencies]
 combine = "3.8.1"
+failure = { version = "0.1.5", features = ["derive"] }
