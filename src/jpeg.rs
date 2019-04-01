@@ -47,12 +47,11 @@ mod tests {
             // If we fail due to permissions, we don't want the test to succeed.
             let jpeg_file = jpeg_file.expect("failed to inspect test file");
             // Skip directories.
-            if !jpeg_file.file_type().is_file()
-                || !jpeg_file
-                    .path()
-                    .extension()
-                    .map(|s| s == "jpg")
-                    .unwrap_or(false)
+            if !jpeg_file
+                .path()
+                .extension()
+                .map(|s| s == "jpg")
+                .unwrap_or(false)
             {
                 continue;
             }
