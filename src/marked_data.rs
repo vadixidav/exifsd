@@ -1,4 +1,6 @@
+use byteorder::{BigEndian, WriteBytesExt};
 use combine::{parser::*, *};
+use std::io;
 
 /// Parses a standard dynamically-sized chuck from a JPEG file.
 ///
@@ -51,5 +53,25 @@ impl<'a> MarkedData<'a> {
                 unexpected_any("16-bit big-endian size less than 2").right()
             }
         })
+    }
+
+    /// Writes the binary representation of the `MarkedData` out to a file.
+    ///
+    /// ```
+    /// use exifsd::*;
+    /// use combine::*;
+    ///
+    /// let input = &[0xFF, 0x11, 0x00, 0x03, 0x01][..];
+    /// let marked_data = MarkedData::parser(token(0x11)).parse(input).unwrap().0;
+    /// let mut written = vec![];
+    /// marked_data.write(&mut written).unwrap();
+    /// assert_eq!(input, &written[..]);
+    /// ```
+    pub fn write<W: WriteBytesExt>(&self, writer: &mut W) -> io::Result<()> {
+        writer.write_u8(0xFF)?;
+        writer.write_u8(self.marker)?;
+        // Include the size of the data field in its own size.
+        writer.write_u16::<BigEndian>((self.data.len() + 2) as u16)?;
+        writer.write_all(self.data)
     }
 }
