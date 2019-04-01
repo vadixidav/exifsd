@@ -39,16 +39,45 @@ mod tests {
     use super::*;
     use combine::stream::state::State;
     use combine::Parser;
-    #[test]
-    fn parse_canon_40d_jpg() {
-        let bytes = &include_bytes!("../exif-samples/jpg/Canon_40D.jpg")[..];
-        let jpeg = Jpeg::parser()
-            .easy_parse(State::new(bytes))
-            .unwrap_or_else(|err| panic!("{}", err.map_range(|r| format!("{:?}", r))))
-            .0;
+    use walkdir::WalkDir;
 
-        let mut written = vec![];
-        jpeg.write(&mut written).unwrap();
-        assert_eq!(bytes, &written[..]);
+    #[test]
+    fn parse_and_reencode_every_test_jpeg() {
+        for jpeg_file in WalkDir::new("exif-samples/jpg") {
+            // If we fail due to permissions, we don't want the test to succeed.
+            let jpeg_file = jpeg_file.expect("failed to inspect test file");
+            // Skip directories.
+            if !jpeg_file.file_type().is_file()
+                || !jpeg_file
+                    .path()
+                    .extension()
+                    .map(|s| s == "jpg")
+                    .unwrap_or(false)
+            {
+                continue;
+            }
+
+            eprintln!("Testing {}", jpeg_file.path().display());
+
+            let bytes = std::fs::read(jpeg_file.path()).expect("failed to open test file");
+
+            if jpeg_file.path().file_name().unwrap() == "corrupted.jpg" {
+                // The corrupted file should fail.
+                Jpeg::parser()
+                    .easy_parse(State::new(&bytes[..]))
+                    .expect_err("should get error when parsing corrupted.jpg");
+            } else {
+                // All other files should parse and encode back into themselves.
+                let jpeg = Jpeg::parser()
+                    .easy_parse(State::new(&bytes[..]))
+                    .unwrap_or_else(|err| panic!("{}", err.map_range(|r| format!("{:?}", r))))
+                    .0;
+
+                let mut written = vec![];
+                jpeg.write(&mut written).unwrap();
+                let same = &bytes[0..written.len()] == written.as_slice();
+                assert!(same);
+            }
+        }
     }
 }

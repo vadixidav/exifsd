@@ -12,3 +12,4 @@ failure = { version = "0.1.5", features = ["derive"] }
 
 [dev-dependencies]
 structopt = "0.2.15"
+walkdir = "2.2.7"

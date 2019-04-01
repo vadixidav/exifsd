@@ -82,12 +82,16 @@ where
     I: RangeStream<Item = u8, Range = &'a [u8]>,
     I::Error: ParseError<I::Item, I::Range, I::Position>,
 {
-    let marker = |m| token(0xFF).skip(look_ahead(m));
+    let marker = |m| range::recognize(token(0xFF)).skip(look_ahead(m));
     let escape = marker(token(0x00));
     let padding = marker(token(0xFF));
-    let unescaped_data = none_of(std::iter::once(0xFF));
+    let unescaped_data = range::recognize(none_of(std::iter::once(0xFF)));
     range::recognize(
-        skip_many(choice((attempt(unescaped_data), attempt(escape))))
-            .skip(skip_many(attempt(padding))),
+        skip_many(choice((
+            attempt(unescaped_data),
+            attempt(escape),
+            attempt(rst()),
+        )))
+        .skip(skip_many(attempt(padding))),
     )
 }
