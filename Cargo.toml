@@ -1,8 +1,12 @@
 [package]
 name = "exifsd"
+description = "Provides JPEG file metadata manipulation, parsing, writing, and injection"
 version = "0.1.0"
 authors = ["Geordon Worley <vadixidav@gmail.com>"]
 edition = "2018"
+license = "MIT"
+documentation = "https://docs.rs/exifsd"
+repository = "https://github.com/vadixidav/exifsd"
 
 exclude = ["exif-samples/**/*"]
 
