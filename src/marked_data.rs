@@ -1,5 +1,15 @@
 use combine::{parser::*, *};
 
+/// Parses a standard dynamically-sized chuck from a JPEG file.
+///
+/// Not all markers in JPEG are followed by data, or even a data size.
+/// This only represents those markers that have data.
+/// Markers that are not followed by data include ["Start of Image"](exifsd::soi),
+/// ["End of Image"](exifsd::eoi), and ["Reset"](exifsd::rst).
+///
+/// One marker, the ["Start of Segment" marker](exifsd::ScanSegment), is followed
+/// by data, but then that data is also followed by entropy-encoded data that
+/// is unmarked.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct MarkedData<'a> {
     pub marker: u8,
