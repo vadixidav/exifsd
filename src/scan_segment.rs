@@ -52,8 +52,8 @@ impl<'a> ScanSegment<'a> {
     /// assert_eq!(input, &written[..]);
     /// ```
     pub fn write<W: WriteBytesExt>(&self, writer: &mut W) -> io::Result<()> {
-        writer.write_u8(0xFF)?;
-        writer.write_u8(0xDA)?;
+        // Start of Segment marker.
+        writer.write_u16::<BigEndian>(0xFFDA)?;
         // Include the size of the data field in its own size.
         writer.write_u16::<BigEndian>((self.specifier.len() + 2) as u16)?;
         writer.write_all(self.specifier)?;
