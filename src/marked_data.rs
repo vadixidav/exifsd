@@ -1,3 +1,5 @@
+use combine::error::StreamError;
+use combine::stream::StreamErrorFor;
 use combine::{parser::*, *};
 
 /// Parses a standard dynamically-sized chuck from a JPEG file.
@@ -17,6 +19,24 @@ pub struct MarkedData<'a> {
 }
 
 impl<'a> MarkedData<'a> {
+    /// Parses out marked data from a JPEG file with marker parser `marker`.
+    ///
+    /// ```
+    /// use exifsd::*;
+    /// use combine::*;
+    ///
+    /// // 0xFF - Start of marker
+    /// // 0x11 - Marker
+    /// // 0x00, 0x03 - Length of data including length (so data length 1)
+    /// // 0x01 - The data
+    /// let input = &[0xFF, 0x11, 0x00, 0x03, 0x01][..];
+    /// let result = MarkedData::parser(token(0x11)).parse(input);
+    /// let expected = MarkedData { marker: 0x11, data: &[0x01] };
+    /// assert_eq!(result, Ok((expected, &[][..])));
+    ///
+    /// // Length cannot be less than 2 (here it is 1).
+    /// MarkedData::parser(any()).parse(&[0xFF, 0x11, 0x00, 0x01][..]).unwrap_err();
+    /// ```
     pub fn parser<I: 'a>(
         marker: impl Parser<Input = I, Output = u8> + 'a,
     ) -> impl Parser<Input = I, Output = MarkedData<'a>> + 'a
@@ -25,7 +45,13 @@ impl<'a> MarkedData<'a> {
         I::Error: ParseError<I::Item, I::Range, I::Position>,
     {
         (byte::byte(0xFF), marker, byte::num::be_u16()).then(|(_, marker, size)| {
-            range::take(size as usize - 2).map(move |data| Self { marker, data })
+            if size >= 2 {
+                range::take(size as usize - 2)
+                    .map(move |data| Self { marker, data })
+                    .left()
+            } else {
+                unexpected_any("16-bit big-endian size less than 2").right()
+            }
         })
     }
 

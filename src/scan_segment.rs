@@ -19,7 +19,7 @@ impl<'a> ScanSegment<'a> {
     ///
     /// let input = &[0xFF, 0xDA, 0x00, 0x02, 0x01, 0xFF, 0x00, 0x02, 0xFF, 0xFF, 0xD9][..];
     /// let result = ScanSegment::parser().parse(input);
-    /// let expected = ScanSegment{ specifier: &[], data: &[0x01, 0xFF, 0x00, 0x02, 0xFF] };
+    /// let expected = ScanSegment { specifier: &[], data: &[0x01, 0xFF, 0x00, 0x02, 0xFF] };
     ///
     /// // Note that the marker `[0xFF, 0xD9]` is not consumed.
     /// assert_eq!(result, Ok((expected, &[0xFF, 0xD9][..])));
