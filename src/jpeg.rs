@@ -46,6 +46,28 @@ impl<'a> Jpeg<'a> {
         // Insert the data at the beginning otherwise.
         self.data.insert(0, JpegData::MarkedData(marked_data));
     }
+
+    /// Injects a marker from `src` as per [`inject_marked_data`].
+    ///
+    /// Returns `true` on success.
+    pub fn inject_marker_from(&mut self, src: &Jpeg<'a>, marker: u8) -> bool {
+        if let Some(md) = src.data.iter().find_map(|jdata| {
+            if let JpegData::MarkedData(md) = jdata {
+                if md.marker == marker {
+                    Some(md)
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        }) {
+            self.inject_marked_data(*md);
+            true
+        } else {
+            false
+        }
+    }
 }
 
 #[cfg(test)]
