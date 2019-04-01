@@ -8,3 +8,5 @@ pub use jpeg_data::*;
 pub use marked_data::*;
 pub use marker::*;
 pub use scan_segment::*;
+
+pub use combine;
