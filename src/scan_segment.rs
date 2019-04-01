@@ -1,5 +1,7 @@
 use crate::*;
+use byteorder::{BigEndian, WriteBytesExt};
 use combine::{parser::*, *};
+use std::io;
 
 /// A Scan Segment is contains a segment of the JPEG data.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -35,6 +37,27 @@ impl<'a> ScanSegment<'a> {
                 data,
             })
         })
+    }
+
+    /// Writes the binary representation of the `MarkedData` out to a file.
+    ///
+    /// ```
+    /// use exifsd::*;
+    /// use combine::*;
+    ///
+    /// let input = &[0xFF, 0xDA, 0x00, 0x02, 0x01, 0xFF, 0x00, 0x02][..];
+    /// let scan_segment = ScanSegment::parser().parse(input).unwrap().0;
+    /// let mut written = vec![];
+    /// scan_segment.write(&mut written).unwrap();
+    /// assert_eq!(input, &written[..]);
+    /// ```
+    pub fn write<W: WriteBytesExt>(&self, writer: &mut W) -> io::Result<()> {
+        writer.write_u8(0xFF)?;
+        writer.write_u8(0xDA)?;
+        // Include the size of the data field in its own size.
+        writer.write_u16::<BigEndian>((self.specifier.len() + 2) as u16)?;
+        writer.write_all(self.specifier)?;
+        writer.write_all(self.data)
     }
 }
 
