@@ -17,7 +17,8 @@ fn main() {
     let result = Jpeg::parser().parse(&input[..]);
     match result {
         Ok((jpeg, _)) => {
-            jpeg.write(&mut std::io::stdout().lock()).expect("unable to write jpeg to stdout");
+            jpeg.write(&mut std::io::stdout().lock())
+                .expect("unable to write jpeg to stdout");
         }
         Err(e) => {
             eprintln!("failed to parse exif data:\n{}", e);

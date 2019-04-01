@@ -6,8 +6,7 @@ where
     I: RangeStream<Item = u8, Range = &'a [u8]>,
     I::Error: ParseError<I::Item, I::Range, I::Position>,
 {
-    range::range(&[0xFF, 0xD8][..])
-        .expected("Start of Image marker")
+    range::range(&[0xFF, 0xD8][..]).expected("Start of Image marker")
 }
 
 /// Parses End of Image marker.
@@ -16,8 +15,7 @@ where
     I: RangeStream<Item = u8, Range = &'a [u8]>,
     I::Error: ParseError<I::Item, I::Range, I::Position>,
 {
-    range::range(&[0xFF, 0xD9][..])
-        .expected("End of Image marker")
+    range::range(&[0xFF, 0xD9][..]).expected("End of Image marker")
 }
 
 /// Parses out a Reset marker.
@@ -26,6 +24,5 @@ where
     I: RangeStream<Item = u8, Range = &'a [u8]>,
     I::Error: ParseError<I::Item, I::Range, I::Position>,
 {
-    range::recognize((token(0xFF), one_of((0..8).map(|n| 0xD0 | n))))
-        .expected("Reset marker")
+    range::recognize((token(0xFF), one_of((0..8).map(|n| 0xD0 | n)))).expected("Reset marker")
 }

@@ -32,6 +32,20 @@ impl<'a> Jpeg<'a> {
         // End of Image marker
         writer.write_u16::<BigEndian>(0xFFD9)
     }
+
+    /// Writes or replaces the existing `MarkedData` section with `marked_data`.
+    pub fn inject_marked_data(&'a mut self, marked_data: MarkedData<'a>) {
+        for data in &mut self.data {
+            if let JpegData::MarkedData(md) = data {
+                if md.marker == marked_data.marker {
+                    *md = marked_data;
+                    return;
+                }
+            }
+        }
+        // Insert the data at the beginning otherwise.
+        self.data.insert(0, JpegData::MarkedData(marked_data));
+    }
 }
 
 #[cfg(test)]
