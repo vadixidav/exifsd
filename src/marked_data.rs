@@ -1,5 +1,3 @@
-use combine::error::StreamError;
-use combine::stream::StreamErrorFor;
 use combine::{parser::*, *};
 
 /// Parses a standard dynamically-sized chuck from a JPEG file.
@@ -52,18 +50,6 @@ impl<'a> MarkedData<'a> {
             } else {
                 unexpected_any("16-bit big-endian size less than 2").right()
             }
-        })
-    }
-
-    pub fn parse_next<I: 'a>() -> impl Parser<Input = I, Output = MarkedData<'a>> + 'a
-    where
-        I: RangeStream<Item = u8, Range = &'a [u8]>,
-        I::Error: ParseError<I::Item, I::Range, I::Position>,
-    {
-        unimplemented!();
-        value(MarkedData {
-            marker: 0,
-            data: &[],
         })
     }
 }
