@@ -34,7 +34,7 @@ impl<'a> Jpeg<'a> {
     }
 
     /// Writes or replaces the existing `MarkedData` section with `marked_data`.
-    pub fn inject_marked_data(&'a mut self, marked_data: MarkedData<'a>) {
+    pub fn inject_marked_data(&mut self, marked_data: MarkedData<'a>) {
         for data in &mut self.data {
             if let JpegData::MarkedData(md) = data {
                 if md.marker == marked_data.marker {

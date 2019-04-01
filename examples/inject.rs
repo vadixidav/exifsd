@@ -13,7 +13,7 @@ struct Opt {
     #[structopt(parse(from_os_str))]
     dest: PathBuf,
     /// 8-bit marker (follows 0xFF) to inject/replace.
-    #[structopt(default_value = "0xE1")]
+    #[structopt(default_value = "225")]
     marker: u8,
 }
 
@@ -48,7 +48,8 @@ fn main() {
             .expect("failed to parse destination exif data")
             .0;
 
-        dest.inject_marked_data(md.clone());
+        dest.inject_marked_data(*md);
+
         let mut dest_file =
             std::fs::File::create(&dest_path).expect("couldn't open destination file for writing");
         dest.write(&mut dest_file)
