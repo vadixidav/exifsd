@@ -1,6 +1,6 @@
 use combine::{parser::*, *};
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct MarkedData<'a> {
     pub marker: u8,
     pub data: &'a [u8],
