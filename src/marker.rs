@@ -21,14 +21,3 @@ where
         .map(|_| ())
         .expected("End of Image marker")
 }
-
-/// Parses out a Reset marker.
-pub fn rst<'a, I: 'a>() -> impl Parser<Input = I, Output = ()> + 'a
-where
-    I: RangeStream<Item = u8, Range = &'a [u8]>,
-    I::Error: ParseError<I::Item, I::Range, I::Position>,
-{
-    (token(0xFF), one_of((0..8).map(|n| 0xD0 | n)))
-        .map(|_| ())
-        .expected("Reset marker")
-}
