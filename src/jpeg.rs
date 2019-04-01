@@ -3,7 +3,7 @@ use combine::{parser::*, *};
 
 #[derive(Clone, Debug)]
 pub struct Jpeg<'a> {
-    pub marked_data: Vec<MarkedData<'a>>,
+    pub data: Vec<JpegData<'a>>,
 }
 
 impl<'a> Jpeg<'a> {
@@ -12,10 +12,10 @@ impl<'a> Jpeg<'a> {
         I: RangeStream<Item = u8, Range = &'a [u8]>,
         I::Error: ParseError<I::Item, I::Range, I::Position>,
     {
-        unimplemented!();
-        value(Jpeg {
-            marked_data: vec![],
-        })
+        soi()
+            .with(many(JpegData::parser()))
+            .skip(eoi())
+            .map(|data| Jpeg { data })
     }
 }
 
@@ -25,7 +25,6 @@ mod tests {
     use combine::stream::state::State;
     use combine::Parser;
     #[test]
-    #[ignore]
     fn parse_canon_40d_jpg() {
         let bytes = &include_bytes!("../exif-samples/jpg/Canon_40D.jpg")[..];
         Jpeg::parser()

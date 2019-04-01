@@ -64,6 +64,7 @@ where
     let padding = marker(token(0xFF));
     let unescaped_data = none_of(std::iter::once(0xFF));
     range::recognize(
-        skip_many(choice((attempt(unescaped_data), attempt(escape)))).skip(attempt(padding)),
+        skip_many(choice((attempt(unescaped_data), attempt(escape))))
+            .skip(skip_many(attempt(padding))),
     )
 }

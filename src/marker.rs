@@ -19,7 +19,7 @@ where
 {
     range::range(&[0xFF, 0xD9][..])
         .map(|_| ())
-        .expected("Start of Image marker")
+        .expected("End of Image marker")
 }
 
 /// Parses out a Reset marker.
@@ -30,5 +30,5 @@ where
 {
     (token(0xFF), one_of((0..8).map(|n| 0xD0 | n)))
         .map(|_| ())
-        .expected("reset marker")
+        .expected("Reset marker")
 }
