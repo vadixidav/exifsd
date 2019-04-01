@@ -39,7 +39,7 @@ impl<'a> ScanSegment<'a> {
         })
     }
 
-    /// Writes the binary representation of the `MarkedData` out to a file.
+    /// Writes the binary representation of the `ScanSegment` out to a file.
     ///
     /// ```
     /// use exifsd::*;

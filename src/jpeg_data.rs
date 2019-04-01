@@ -1,5 +1,7 @@
 use crate::*;
+use byteorder::WriteBytesExt;
 use combine::{parser::*, *};
+use std::io;
 
 #[derive(Clone, Debug)]
 pub enum JpegData<'a> {
@@ -19,5 +21,13 @@ impl<'a> JpegData<'a> {
             // If it wasn't a Scan Segment, the only other option is End of Image (0xD9).
             attempt(MarkedData::parser(none_of(std::iter::once(0xD9))).map(JpegData::MarkedData)),
         ))
+    }
+
+    /// Writes the binary representation of the `JpegData` out to a file.
+    pub fn write<W: WriteBytesExt>(&self, writer: &mut W) -> io::Result<()> {
+        match self {
+            JpegData::MarkedData(md) => md.write(writer),
+            JpegData::ScanSegment(ss) => ss.write(writer),
+        }
     }
 }
