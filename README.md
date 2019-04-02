@@ -27,3 +27,6 @@ git clone --recursive https://github.com/vadixidav/exifsd.git
 [Wikipedia was useful in parsing entopy-encoded data](https://en.wikipedia.org/wiki/JPEG#Syntax_and_structure).
 
 [This](http://gvsoft.no-ip.org/exif/exif-explanation.html) seems to be mostly the same as the one by TsuruZoh Tachibanaya, but it provides some slight variation and is more compact.
+
+[This 
+page](https://dev.exiv2.org/projects/exiv2/wiki/The_Metadata_in_JPEG_files) contains a list of various metadata markers in JPEG files.
